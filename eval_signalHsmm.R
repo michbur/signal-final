@@ -11,10 +11,10 @@ res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_file) {
   res <- unlist(lapply(dat, function(ith_seq) try(run_signalHsmm(ith_seq), silent = TRUE)), recursive = FALSE)
   
   lapply(res, function(ith_res) {
-    if(class(ith_res) == "try_error") {
-      sp.probability = NA
-    } else {
+    if("sp_probability" %in% names(ith_res)) {
       sp.probability = ith_res[["sp_probability"]]
+    } else {
+      sp.probability = NA
     }
   }) %>% 
     unlist(use.names = FALSE) %>% 
