@@ -23,6 +23,7 @@ res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_file) {
            id = 1L:nrow(.),
            file = ith_file) %>% 
     select(file, id, name, prob)
-})
+}) %>% 
+  do.call(rbind, .)
 
 write.csv(x = res, file = paste0(files_path, "results/res.csv"), row.names = FALSE)
