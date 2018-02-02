@@ -11,18 +11,17 @@ res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_file) {
   res <- unlist(lapply(dat, function(ith_seq) try(run_signalHsmm(ith_seq), silent = TRUE)), recursive = FALSE)
   
   lapply(res, function(ith_res) {
-    if("sp_probability" %in% names(ith_res)) {
-      sp.probability = ith_res[["sp_probability"]]
+    sp.probability  <- if("sp_probability" %in% names(ith_res)) {
+      ith_res[["sp_probability"]]
     } else {
-      sp.probability = NA
+      NA
     }
+    data.frame(name = ith_res[["name"]], signalHsmm = sp.probability)
   }) %>% 
-    unlist(use.names = FALSE) %>% 
-    data.frame(prob = .) %>% 
-    mutate(name = names(res),
-           id = 1L:nrow(.),
+    do.call(rbind, .) %>% 
+    mutate(id = 1L:nrow(.),
            file = ith_file) %>% 
-    select(file, id, name, prob)
+    select(file, id, name, signalHsmm)
 }) %>% 
   do.call(rbind, .)
 
