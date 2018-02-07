@@ -39,11 +39,13 @@ all_seqs_res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_f
                stringsAsFactors = FALSE)
   }, silent = TRUE)) 
   
-  nonproblematic <- sapply(res, function(i) class(i) != "try-error")
-  do.call(rbind, res[nonproblematic]) %>% 
-    mutate(id = cumsum(nonproblematic)) %>% 
-    select(file, id, name, signalHsmm, signalP, deepSig)
-}) %>% 
-  do.call(rbind, .)
+  # nonproblematic <- sapply(res, function(i) class(i) != "try-error")
+  # do.call(rbind, res[nonproblematic]) %>% 
+  #   mutate(id = cumsum(nonproblematic)) %>% 
+  #   select(file, id, name, signalHsmm, signalP, deepSig)
+  
+  res
+}) 
 
-write.csv(x = all_seqs_res, file = paste0(files_path, "results/full_res.csv"), row.names = FALSE)
+save(all_seqs_res, file = "plasmodium_signals.RData")
+#write.csv(x = all_seqs_res, file = paste0(files_path, "results/full_res.csv"), row.names = FALSE)
