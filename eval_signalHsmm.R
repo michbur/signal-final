@@ -5,6 +5,7 @@ library(pbapply)
 
 files_path <- "/home/michal/Dropbox/signal_final_dat/"
 
+
 all_seqs_res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_file) {
   
   dat <- read.fasta(paste0(files_path, "data/", ith_file), seqtype = "AA")
@@ -15,7 +16,7 @@ all_seqs_res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_f
     
     signalP_command <- paste0(files_path, "signalp-4.1/signalp -t euk -f short tmp_seq.fasta > signalP.txt")
     deepSig_command <- paste0(files_path, "deepsig-1.0/runDeepSig.sh tmp_seq.fasta euk deepSig.txt")
-
+    
     system(deepSig_command, ignore.stdout = TRUE, ignore.stderr = TRUE)
     system(signalP_command)
     
@@ -39,12 +40,10 @@ all_seqs_res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_f
                stringsAsFactors = FALSE)
   }, silent = TRUE)) 
   
-  # nonproblematic <- sapply(res, function(i) class(i) != "try-error")
-  # do.call(rbind, res[nonproblematic]) %>% 
-  #   mutate(id = cumsum(nonproblematic)) %>% 
-  #   select(file, id, name, signalHsmm, signalP, deepSig)
-  
-  res
+  nonproblematic <- sapply(res, function(i) class(i) != "try-error")
+  do.call(rbind, res[nonproblematic]) %>% 
+    mutate(id = cumsum(nonproblematic)) %>% 
+    select(file, id, name, signalHsmm, signalP, deepSig)
 }) 
 
 save(all_seqs_res, file = "plasmodium_signals.RData")
