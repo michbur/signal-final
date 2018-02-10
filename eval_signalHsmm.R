@@ -6,7 +6,7 @@ library(pbapply)
 files_path <- "/home/michal/Dropbox/signal_final_dat/"
 
 
-all_seqs_res <- pblapply(list.files(paste0(files_path, "data/"))[1], function(ith_file) {
+all_seqs_res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_file) {
   
   dat <- read.fasta(paste0(files_path, "data/", ith_file), seqtype = "AA")
   
