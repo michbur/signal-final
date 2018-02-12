@@ -10,7 +10,7 @@ all_seqs_res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_f
   try({
     dat <- read.fasta(paste0(files_path, "data/", ith_file), seqtype = "AA")
     
-    res <- run_signalHsmm(dat)
+    res <- run_signalHsmm(dat[lengths(dat) > 1])
     
     res_signalHsmm <- pred2df(res) %>% 
       mutate(name = rownames(.), 
@@ -43,3 +43,8 @@ all_seqs_res <- pblapply(list.files(paste0(files_path, "data/")), function(ith_f
 
 #write.csv(x = all_seqs_res, file = paste0(files_path, "results/full_res.csv"), row.names = FALSE)
 save(all_seqs_res, file = paste0(files_path, "results/full_res.RData"))
+
+load(paste0(files_path, "results/full_res.RData"))
+
+write.csv(x = do.call(rbind, all_seqs_res), 
+          file = paste0(files_path, "results/full_res.csv"), row.names = FALSE)
